@@ -2,5 +2,7 @@ POST http://localhost:3333/events
 Content-Type: application/json
 
 {
-  "title": "Aniversário do Vitor"
+  "title": "Aniversário do Vitor",
+  "details": "Evento de aniversário do vitor de 24 anos",
+  "maximumAttendees": 50
 }
