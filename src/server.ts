@@ -2,15 +2,19 @@ import fastify from "fastify";
 import { z } from "zod"
 import { PrismaClient } from "@prisma/client";
 import { generateSlug } from "./utils/generate-slug";
+import { serializerCompiler, validatorCompiler, ZodTypeProvider } from "fastify-type-provider-zod";
 
 const app = fastify();
+
+app.setValidatorCompiler(validatorCompiler)
+app.setSerializerCompiler(serializerCompiler)
 
 const prisma =  new PrismaClient({
   log: ['query'],
 })
 
 
-app.post('/events', async (request, reply) => {
+app.withTypeProvider<ZodTypeProvider>().post('/events', async (request, reply) => {
   const createEventSchema = z.object({
     title: z.string().min(4),
     details: z.string().nullable(),
