@@ -14,14 +14,22 @@ const prisma =  new PrismaClient({
 })
 
 
-app.withTypeProvider<ZodTypeProvider>().post('/events', async (request, reply) => {
-  const createEventSchema = z.object({
-    title: z.string().min(4),
-    details: z.string().nullable(),
-    maximumAttendees: z.number().int().positive().nullable()
-  })  
+app.withTypeProvider<ZodTypeProvider>()
+.post('/events',{
+  schema: {
+    body: z.object({
+      title: z.string().min(4),
+      details: z.string().nullable(),
+      maximumAttendees: z.number().int().positive().nullable()
+    }),   
+  }
+}, async (request, reply) => {
 
-  const {details,title,maximumAttendees } = createEventSchema.parse(request.body)
+  const {
+    details,
+    title,
+    maximumAttendees, 
+  } = request.body
   const slug = generateSlug(title)
 
   const eventWithSameSlug = await prisma.event.findUnique({
